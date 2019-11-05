@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="chinese">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Wang Wenzhe">
+
+
+    <meta name="subtitle" content="none">
+
+
+
+    <meta name="keywords" content="front-end js">
+
+
+<title>如何写一个脚本 | MysteryZZZ&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Mysteryzzz&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/读书">生活</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Mysteryzzz&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/读书">生活</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">如何写一个脚本</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Wang Wenzhe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 20, 2018&nbsp;&nbsp;22:26:42</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2>什么是脚本</h2>
+<p>我们在 terminal 运行的 cd，ls，clear 这些都是脚本。</p>
+<p>由于进入目录、列表目录、清空控制台这些需求比较常见，所以系统为我们预设了这些脚本。</p>
+<h2>用途</h2>
+<p>脚本的功能很强大，可以帮我们做一些机械的工作。只是预设的脚本功能比较有限，
+但不必失望，我们可以通过自己动手写一些自定义脚本来丰富它，并且，它很简单。</p>
+<h2>示例</h2>
+<p>我们通过示例来说明如何写一个脚本。</p>
+<p>接下来实现的功能是这样的：我想只输入 <code>new hello</code> 就能帮我建一个 hello.html，并且每个 html 写入固定的模板。</p>
+<p>我把脚本都放到了本地 「~/scripts」 文件夹里面。</p>
+<ol>
+<li>
+<p>新建文件 「new」，同时新建一个 「index.html」，在 「index.html」 里面写入任意内容</p>
+</li>
+<li>
+<p>打开 「new」，并写入以下内容</p>
+</li>
+</ol>
+<p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">if [ -d $1.html ]; then</span><br><span class="line">    echo 'error: file exists'</span><br><span class="line">    exit</span><br><span class="line">fi</span><br><span class="line">touch $1.html</span><br><span class="line">cp ~/documents/repos/scripts/index.html $1.html</span><br><span class="line">echo 'successfully created'</span><br><span class="line">exit</span><br></pre></td></tr></table></figure></p>
+<ol start="3">
+<li>
+<p>保存退出，并添加权限 <code>chmod +x new</code></p>
+</li>
+<li>
+<p>在 「~/.bashrc」 文件夹的最后添加这个脚本的路径，比如我的路径是：</p>
+<p><code>export PATH=&quot;/Users/mac/documents/repos/scripts/:$PATH&quot;</code></p>
+</li>
+<li>
+<p>执行 <code>source ~/.bashrc</code></p>
+</li>
+<li>
+<p>执行 <code>new hello</code></p>
+</li>
+<li>
+<p>恭喜你，完成了。</p>
+</li>
+</ol>
+<h2>总结</h2>
+<p>实践往往是理解一个事物最快的方式，希望上面的可以帮助到你。</p>
+<p>如果你还想了解其他的例子，请点击<a href="https://github.com/mysteryven/blog/blob/master/Notes/note-3.md" target="_blank" rel="noopener">click</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Wang Wenzhe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://writerwz.wang/passages/如何写一个脚本/">http://writerwz.wang/passages/如何写一个脚本/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/技巧/"># 技巧</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/passages/你应该懂得git知识点/">一些git知识点</a>
+            
+            
+            <a class="next" rel="next" href="/passages/你所不知道的计算机技巧/">你所不知道的计算机技巧</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Wang Wenzhe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

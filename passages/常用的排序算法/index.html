@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="chinese">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Wang Wenzhe">
+
+
+    <meta name="subtitle" content="none">
+
+
+
+    <meta name="keywords" content="front-end js">
+
+
+<title>7 种常用的排序算法 | MysteryZZZ&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Mysteryzzz&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/读书">生活</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Mysteryzzz&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/读书">生活</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">7 种常用的排序算法</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Wang Wenzhe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 14, 2018&nbsp;&nbsp;23:21:06</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/编程/">编程</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>排序可视化请看<a href="https://visualgo.net/bn/sorting" target="_blank" rel="noopener">网站</a></p>
+</blockquote>
+<p>自己总结了一下几个常用的排序算法，用 JS 实现的，有错误欢迎指出。</p>
+<h2>目录</h2>
+<ul>
+<li>冒泡排序</li>
+<li>桶排序</li>
+<li>计数排序</li>
+<li>插入排序</li>
+<li>选择排序</li>
+<li>堆排序(两种方法)</li>
+<li>基数排序</li>
+</ul>
+<p>&lt;!--more--&gt;</p>
+<h2>算法</h2>
+<h3>通用部分</h3>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">function exch(a, i, j) &#123;</span><br><span class="line">	var temp = a[i];</span><br><span class="line">	a[i] = a[j];</span><br><span class="line">	a[j] = temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3>冒泡排序</h3>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">function bubbleSort(a) &#123;</span><br><span class="line">	var len = a.length;</span><br><span class="line">	if (len == 0) </span><br><span class="line">		return [];</span><br><span class="line"></span><br><span class="line">	for (var i = 0; i &lt; len -1; i++) &#123;</span><br><span class="line">		for (var j = i; j &lt; len; j++) &#123;</span><br><span class="line">			if (a[j] &gt; a[j+1])</span><br><span class="line">				exch(a, j, j+1);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3>桶排序</h3>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">function bucketSort(a) &#123;</span><br><span class="line">	var len = a.length;</span><br><span class="line">	if (len == 0) &#123;</span><br><span class="line">		return []</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	var res = [];</span><br><span class="line">	var bucket = [];</span><br><span class="line">	var i = 0,</span><br><span class="line">		j = 0,</span><br><span class="line">		min = 0;</span><br><span class="line">		max = 0;</span><br><span class="line"></span><br><span class="line">	for (i = 0; i &lt; len ; i++) &#123;</span><br><span class="line">		if (min &gt; a[i])</span><br><span class="line">			min = a[i];</span><br><span class="line">		if (max &lt; a[i])</span><br><span class="line">			max = a[i];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//count of buckets  53 9</span><br><span class="line">	var count = Math.ceil((max - min) / 10);</span><br><span class="line"></span><br><span class="line">	for (i = 0; i &lt; len; i++) &#123;</span><br><span class="line">		var current = a[i];</span><br><span class="line">		for (j = 0; j &lt; count; j++) &#123;</span><br><span class="line">			if (current &gt;= min + j*10 &amp;&amp; current &lt; min + (j+1)*10) &#123;</span><br><span class="line">				if (!bucket[j])</span><br><span class="line">					bucket[j] = [];</span><br><span class="line">				bucket[j].push(current);</span><br><span class="line">				bucket[j] = insertSort(bucket[j]); </span><br><span class="line">				//  对每个桶里的元素进行插入排序</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	for (i = 0; i &lt; count; i++) &#123;</span><br><span class="line">		for (j = 0; j &lt; bucket[i].length; j++) &#123;</span><br><span class="line">			res.push(bucket[i][j]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    return res;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3>计数排序</h3>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">function countSort(a) &#123;</span><br><span class="line">	var len = a.length;</span><br><span class="line">	if (len == 0) </span><br><span class="line">		return [];</span><br><span class="line"></span><br><span class="line">	var min = a[0];</span><br><span class="line">	var max = a[0];</span><br><span class="line">	var bucket = [];</span><br><span class="line">	var res = [];</span><br><span class="line"></span><br><span class="line">	for (let i = 1; i &lt; len; i++) &#123;</span><br><span class="line">		if (min &gt; a[i]) &#123;</span><br><span class="line">			min = a[i];</span><br><span class="line">		&#125;</span><br><span class="line">		if (max &lt; a[i]) &#123;</span><br><span class="line">			max = a[i];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	for (let i = 0; i &lt; len; i++) &#123;</span><br><span class="line">		let index = a[i] - min;  // 为了防止第一个数很大的时候浪费空间，所以每次都从桶的0开始</span><br><span class="line">		if (bucket[index] == undefined) &#123;</span><br><span class="line">			bucket[index] = 1;</span><br><span class="line">		&#125;</span><br><span class="line">		else &#123;</span><br><span class="line">			bucket[index]++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	for (let i = 0; i &lt; max-min+1; i++) &#123;</span><br><span class="line">		if (bucket[i] != undefined) &#123;</span><br><span class="line">			let count = bucket[i]</span><br><span class="line">			while (count &gt; 0) &#123;</span><br><span class="line">				res.push(i+min);</span><br><span class="line">				count--;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3>插入排序</h3>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function insertSort(a) &#123;</span><br><span class="line">	var len = a.length;</span><br><span class="line">	if (len == 0)</span><br><span class="line">		return [];</span><br><span class="line"></span><br><span class="line">	var i = 0,</span><br><span class="line">		current = 0;</span><br><span class="line"></span><br><span class="line">	for (i = 1; i &lt; len; i++) &#123;</span><br><span class="line">		current = i;</span><br><span class="line">		while (current &gt;= 1 &amp;&amp; a[current] &lt; a[current-1]) &#123;</span><br><span class="line">			exch(a, current, current-1);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3>选择排序</h3>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">function selectSort(a) &#123;</span><br><span class="line">	var len = a.length;</span><br><span class="line">	if (len == 0) &#123;</span><br><span class="line">		return [];</span><br><span class="line">	&#125;</span><br><span class="line">	var minValue = a[0];</span><br><span class="line">	var minIndex = 0;</span><br><span class="line">	var i = 0,</span><br><span class="line">		j = 0;</span><br><span class="line"></span><br><span class="line">	for (i = 0; i &lt; a.length-1; i++) &#123;</span><br><span class="line">		minValue = a[i];</span><br><span class="line">		minIndex = i;</span><br><span class="line">		for (j = i+1; j &lt; a.length; j++) &#123;</span><br><span class="line">			if (minValue &gt; a[j]) &#123;</span><br><span class="line">				minIndex = j;</span><br><span class="line">				minValue = a[j];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		exch(a, i, minIndex);</span><br><span class="line">	&#125;</span><br><span class="line">	return a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3>堆排序（数组第一个位置用不用分出两种方法）</h3>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">//  数组第一个位置留空</span><br><span class="line">function heapSort(a) &#123;</span><br><span class="line">	let N = a.length;</span><br><span class="line"></span><br><span class="line">	for (let k = Math.floor(N/2); k&gt;= 1; k--) &#123;</span><br><span class="line">		sink(a, k, N);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	while(N &gt; 1) &#123;</span><br><span class="line">		exch(a, 1, N--);</span><br><span class="line">		sink(a, 1, N);</span><br><span class="line">	&#125;</span><br><span class="line">	console.log(a);</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function sink(a, k, N) &#123;</span><br><span class="line">	while (2 * k &lt;= N) &#123;</span><br><span class="line">		var j = 2 * k;</span><br><span class="line">		if (j &lt; N &amp;&amp; a[j]&lt;a[j+1])</span><br><span class="line">			j++;</span><br><span class="line"></span><br><span class="line">		if (a[k] &gt; a[j])</span><br><span class="line">			break;</span><br><span class="line">		exch(a, k, j);</span><br><span class="line">		k = j;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// 第一个位置不留空</span><br><span class="line">function heapSort(a) &#123;</span><br><span class="line">	let N = a.length - 1;</span><br><span class="line"></span><br><span class="line">	for (let k = Math.ceil((N-1)/2); k&gt;= 0; k--) &#123;</span><br><span class="line">		sink(a, k, N);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	while(N &gt; 0) &#123;</span><br><span class="line">		exch(a, 0, N--);</span><br><span class="line">		sink(a, 0, N);</span><br><span class="line">	&#125;</span><br><span class="line">	console.log(a);</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function sink(a, k, N) &#123;</span><br><span class="line">	while (2 * k + 1 &lt;= N) &#123;</span><br><span class="line">		var j = 2 * k + 1;</span><br><span class="line">		if (j &lt; N &amp;&amp; a[j]&lt;a[j+1])</span><br><span class="line">			j++;</span><br><span class="line"></span><br><span class="line">		if (a[k] &gt; a[j])</span><br><span class="line">			break;</span><br><span class="line">		exch(a, k, j);</span><br><span class="line">		k = j;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3>基数排序</h3>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">function radixSort(a) &#123;</span><br><span class="line">	var len = a.length;</span><br><span class="line">	if (len == 0) &#123;</span><br><span class="line">		return [];</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	var res = [];</span><br><span class="line">	var bucket = [];</span><br><span class="line">	var isBreak = false;</span><br><span class="line">	var count = 1;</span><br><span class="line"></span><br><span class="line">	while (!isBreak) &#123;</span><br><span class="line">		isBreak = true;</span><br><span class="line">		bucket = [];  // 注意每次桶都要更新..因为这里我被困了好久</span><br><span class="line">		for (var i = 0; i &lt; len; i++) &#123;</span><br><span class="line">			var remain = Math.floor(a[i] / count) % 10;</span><br><span class="line">			if (remain &gt; 9)</span><br><span class="line">				remain = 0;</span><br><span class="line">			if (remain != 0) &#123;</span><br><span class="line">				isBreak = false;</span><br><span class="line">			&#125;</span><br><span class="line">			if (!bucket[remain]) &#123;</span><br><span class="line">				bucket[remain] = [];</span><br><span class="line">			&#125;</span><br><span class="line">			bucket[remain].push(a[i]);</span><br><span class="line">		&#125;</span><br><span class="line">		a = [];   // 和桶一样每次要更新</span><br><span class="line">		for (var j = 0; j &lt; bucket.length; j++) &#123;</span><br><span class="line">			if (Array.isArray(bucket[j]) ) &#123;</span><br><span class="line">				for (var k = 0; k &lt; bucket[j].length; k++) &#123;</span><br><span class="line">					a.push(bucket[j][k]);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		count *= 10;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	return a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Wang Wenzhe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://writerwz.wang/passages/常用的排序算法/">http://writerwz.wang/passages/常用的排序算法/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/algorithms/"># algorithms</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/passages/ECharts使用总结/">Echarts填坑</a>
+            
+            
+            <a class="next" rel="next" href="/passages/http总结/">http-summary</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Wang Wenzhe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

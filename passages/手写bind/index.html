@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="chinese">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Wang Wenzhe">
+
+
+    <meta name="subtitle" content="none">
+
+
+
+    <meta name="keywords" content="front-end js">
+
+
+<title>手写bind | MysteryZZZ&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Mysteryzzz&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/读书">生活</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Mysteryzzz&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/读书">生活</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">手写bind</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Wang Wenzhe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 6, 2019&nbsp;&nbsp;9:42:15</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>bind 是在 ES5 新加入的语法，具体的语法 MDN 都有。但有一点需要额外注意一下：bind 会返回一个新的函数。也就是说：它会修改 this 的指向，并返回新的函数体。</p>
+<p>接下来，我来讲一下手写 bind 的思路。</p>
+<p>首先我们要明白 bind 的用途：它是为了改变默认 this 的，如：</p>
+<p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123; <span class="attr">a</span>: <span class="number">1</span> &#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">yyy</span>(<span class="params">a</span>) </span>&#123;<span class="keyword">this</span>.a = a&#125;</span><br><span class="line"><span class="keyword">var</span> xxx = yyy.bind(obj)</span><br><span class="line">xxx(a) = <span class="number">3</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.a) <span class="comment">// 3</span></span><br></pre></td></tr></table></figure></p>
+<p>此时 xxx 的代码实际上是下面这样的</p>
+<p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">xxx</span>(<span class="params">newA</span>) </span>&#123;</span><br><span class="line">   obj.a = newA </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>了解了如何使用，我们才能往下写，我们来为函数的原型添加一个 <code>myBind</code> 方法</p>
+<p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">(<span class="built_in">Function</span>.prototype.myBind = <span class="function"><span class="keyword">function</span>(<span class="params">otherThis</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 当前的 this 是 yyy，如果 this 的类型不是函数，就返回</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="keyword">this</span> !== <span class="string">'function'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 获取 yyy 除去第一项后的参数，也就是除去 this 的剩余参数</span></span><br><span class="line">  <span class="keyword">var</span> bindArgs = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>) </span><br><span class="line">  <span class="keyword">var</span> bindArgsLength = bindArgs.length  <span class="comment">// 这句话很重要，代码后有解释</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> fBind = <span class="keyword">this</span> <span class="comment">// yyy ，也是要绑定到哪里</span></span><br><span class="line">  <span class="keyword">var</span> fNP = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;&#125;  <span class="comment">// 中间量，以便生成的 xxx 和原来函数毫无瓜葛</span></span><br><span class="line">  <span class="keyword">var</span> fBound = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    bindArgs.length = bindArgsLength <span class="comment">// 必须重置 bindArgs 的长度</span></span><br><span class="line">    bindArgs.push.apply(bindArgs, <span class="built_in">arguments</span>) <span class="comment">// 组合两次的数据</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> fBind.apply(otherThis, bindArgs) <span class="comment">// 用 apply 方法为新的返回值绑定用户指定的 this</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.prototype) &#123; <span class="comment">// Function.prototype 没有 prototype</span></span><br><span class="line">    fNP.prototype = <span class="keyword">this</span>.prototype</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  fBound.prototype = <span class="keyword">new</span> fNP() </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> fBound</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure></p>
+<p>需要说明一下重置 bindArgs 那一句话：</p>
+<p>因为 bindArgs 是和 fBound 同一级别的，当执行 <code>myBind</code> 这个函数之后，fBound 和 bindArgs 都只有一份，但是可能多次调用 myBind 返回的函数（这里是 xxx）并传参，如果不重置，我们两次调用 xxx('aaa')，那 bindArgs 的长度就变为 2 了，但我们希望两次调用不能被影响，只能受父亲 yyy 传参的影响。由于每次添加都是 push 到后面，所有每次只要恢复成以前的长度即可。</p>
+<p>好了，我们已经大致完成了，但是还要一个缺陷：不支持 new，真正的 bind 方法在使用 new 之后的 this 还是指向 new 新生成的对象。</p>
+<p>举例来说，我们希望得到下面的效果：</p>
+<p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123; <span class="attr">a</span>: <span class="number">1</span> &#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">yyy</span>(<span class="params">a</span>) </span>&#123;<span class="keyword">this</span>.a = a&#125;</span><br><span class="line"><span class="keyword">var</span> xxx = yyy.bind(obj)</span><br><span class="line"><span class="keyword">var</span> xxxxxx = <span class="keyword">new</span> xxx(<span class="string">'你好'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(obj.a) <span class="comment">// 1 </span></span><br><span class="line"><span class="built_in">console</span>.log(xxxxxx.a) <span class="comment">// 你好</span></span><br></pre></td></tr></table></figure></p>
+<p>而我们现在的代码是如何的呢？ 由于我们没做判断，我们返回的函数实际是：</p>
+<p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">xxx</span>(<span class="params">newA</span>) </span>&#123;</span><br><span class="line">   obj.a = newA </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>结果是：xxxxxx.a 未定义，而 obj.a 是你好</p>
+<p>如何解决？只需在执行 apply 的时候绑定更换绑定的 this 就好了
+解决的关键是 this 到底指向什么，如果使用 new 操作符，那个时候的 this 就是指向新的对象。</p>
+<p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">(<span class="built_in">Function</span>.prototype.myBind = <span class="function"><span class="keyword">function</span>(<span class="params">otherThis</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 当前的 this 是 yyy，如何 this 的类型不是函数，就返回</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="keyword">this</span> !== <span class="string">'function'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> bindArgs = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>) <span class="comment">// 获取 yyy 除去第一项后的参数</span></span><br><span class="line">  <span class="keyword">var</span> bindArgsLength = bindArgs.length </span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> fBind = <span class="keyword">this</span> <span class="comment">// yyy ，也是是要绑定到哪里</span></span><br><span class="line">  <span class="keyword">var</span> fNP = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;&#125;  <span class="comment">// 中间量，以便生成的 xxx 和原来函数毫无瓜葛</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.prototype) &#123; <span class="comment">// Function.prototype 没有 prototype</span></span><br><span class="line">    fNP.prototype = <span class="keyword">this</span>.prototype</span><br><span class="line">  &#125; <span class="comment">// 放在前面便于理解</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> fBound = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    bindArgs.length = bindArgsLength <span class="comment">// 必须重置 bindArgs 的长度</span></span><br><span class="line">    bindArgs.push.apply(bindArgs, <span class="built_in">arguments</span>) <span class="comment">// 组合两次的数据</span></span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 如果使用 new 操作符，此时 this 指向的是新生成的对象，那么 fNP.prototype.isPrototypeOf(this) === true</span></span><br><span class="line">      <span class="comment">// xxxxxx -&gt; xxx -&gt; FNP</span></span><br><span class="line">      <span class="keyword">return</span> fBind.apply( fNP.prototype.isPrototypeOf(<span class="keyword">this</span>) ? <span class="keyword">this</span>: otherThis, bindArgs) </span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  fBound.prototype = <span class="keyword">new</span> fNP() </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> fBound</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure></p>
+<p>写完了，昨天花了一个下午的时间在理解这个问题，我认为理解起来还是有点难度的，希望帮助到你。</p>
+<p>（完）</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Wang Wenzhe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://writerwz.wang/passages/手写bind/">http://writerwz.wang/passages/手写bind/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/js/"># js</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/passages/js继承的写法/">继承的两种写法</a>
+            
+            
+            <a class="next" rel="next" href="/passages/js里面new到底有什么用？/">js里面new到底有什么用？</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Wang Wenzhe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

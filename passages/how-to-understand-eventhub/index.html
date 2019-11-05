@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="chinese">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Wang Wenzhe">
+
+
+    <meta name="subtitle" content="none">
+
+
+
+    <meta name="keywords" content="front-end js">
+
+
+<title>解释EventHub机制 | MysteryZZZ&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Mysteryzzz&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/读书">生活</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Mysteryzzz&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/读书">生活</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">解释EventHub机制</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Wang Wenzhe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">September 14, 2018&nbsp;&nbsp;21:40:23</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2>前言</h2>
+<p>在项目中，我们可能会需要两个模块间相互通讯，这时候就需要用到EventHub来处理这个问题.举个例子来说，我们页面的头和内容分别是用两个js文件来写的，这时候如果你想通过点击内容来触发头文件的事件，此时就需要用到eventHub机制。</p>
+<h2>代码实现</h2>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// eventHub.js</span><br><span class="line">window.eventHub = &#123;</span><br><span class="line">  fnList: [],</span><br><span class="line">  on(name, callback) &#123;</span><br><span class="line">    if (!this.fnList[name]) &#123;</span><br><span class="line">      this.fnList[name] = []</span><br><span class="line">    &#125;</span><br><span class="line">    this.fnList[name].push(callback)</span><br><span class="line">  &#125;,</span><br><span class="line">  emit(name, data) &#123;</span><br><span class="line">    this.fnList[name].map((fn)=&gt;&#123;</span><br><span class="line">      fn.call(undefined, data)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2>举例子来说明</h2>
+<blockquote>
+<p>我们想实现的功能是这样的: 在点击按钮来让header的数字加1</p>
+</blockquote>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">// index.html</span><br><span class="line"> &lt;header&gt;</span><br><span class="line">    数字:&lt;span id=&apos;number&apos;&gt;1&lt;/span&gt;</span><br><span class="line">  &lt;/header&gt;</span><br><span class="line">  &lt;main&gt;</span><br><span class="line">    &lt;button onclick=&apos;mainJs.addOne()&apos;&gt;加1&lt;/button&gt;</span><br><span class="line">  &lt;/main&gt;  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/* js 部分 */</span><br><span class="line">// 我们就这样来假装两个文件了 </span><br><span class="line">var headerJs = &#123;</span><br><span class="line">  run() &#123;</span><br><span class="line">    window.eventHub.on(&apos;addOne&apos;, (number)=&gt;&#123;</span><br><span class="line">      document.getElementById(&apos;number&apos;).innerHTML = number</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">headerJs.run()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var mainJs = &#123;</span><br><span class="line">  num: 1,</span><br><span class="line">  addOne() &#123;</span><br><span class="line">    window.eventHub.emit(&apos;addOne&apos;, this.num++)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&lt;img src='https://i.loli.net/2018/08/17/5b7624f902c78.png'&gt;</p>
+<p>我疯狂加了15次 结果就如上图所示。</p>
+<h2>在vue中的应用</h2>
+<blockquote>
+<p>vue中直接替我们写好了on和emit函数，使用方法是类似的，同样的我们在例子中来理解这个过程。</p>
+</blockquote>
+<p>首先，我们知道组件内部的input的值单单使用v-model的双向绑定无法直接传到外部，此时我们就需要一些tricks。即用eventhub和监听组件内部的input输入事件来解决，具体如下。</p>
+<p>&lt;script async src=&quot;//jsfiddle.net/0z8gnpv1/17/embed/&quot;&gt;&lt;/script&gt;</p>
+<p>我试用了一下jsfiddle的分享功能，但是浏览的时候由于网速的关系吧，可能不是很理想，所以再paste源码到这</p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=&apos;app&apos;&gt;</span><br><span class="line">   内部:&lt;editable-span v-on:updata=&apos;updataName&apos; v-bind:name=&apos;name&apos;&gt;&lt;/editable-span&gt; </span><br><span class="line">   &lt;hr&gt;</span><br><span class="line">  外部:&#123;&#123;name&#125;&#125;</span><br><span class="line"> &lt;/div&gt;</span><br><span class="line">  &lt;script src=&quot;https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Vue.component(&apos;editable-span&apos;, &#123;</span><br><span class="line">	props: [&apos;name&apos;],</span><br><span class="line">	template: `</span><br><span class="line">  	&lt;input :value=&quot;name&quot; @input=&quot;updataName&quot;&gt;`,</span><br><span class="line">  methods: &#123;</span><br><span class="line">  	updataName(e)&#123;</span><br><span class="line">    	this.$emit(&apos;updata&apos;, e.currentTarget.value)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">new Vue(&#123;</span><br><span class="line">	el: &apos;#app&apos;,</span><br><span class="line">  data: &#123;</span><br><span class="line">  	name: &apos;&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">  	updataName(e) &#123;</span><br><span class="line">    	this.name = e</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>效果
+&lt;img src='https://i.loli.net/2018/08/17/5b763aef6f9b8.png'&gt;</p>
+<p>(完)</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Wang Wenzhe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://writerwz.wang/passages/how-to-understand-eventhub/">http://writerwz.wang/passages/how-to-understand-eventhub/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/js/"># js</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/passages/什么是路由/">什么是路由</a>
+            
+            
+            <a class="next" rel="next" href="/passages/理解form表单/">关于form表单的一些事情</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Wang Wenzhe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

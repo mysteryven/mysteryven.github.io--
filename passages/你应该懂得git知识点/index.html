@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="chinese">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Wang Wenzhe">
+
+
+    <meta name="subtitle" content="none">
+
+
+
+    <meta name="keywords" content="front-end js">
+
+
+<title>一些git知识点 | MysteryZZZ&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Mysteryzzz&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/读书">生活</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Mysteryzzz&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/读书">生活</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">一些git知识点</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Wang Wenzhe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 25, 2018&nbsp;&nbsp;18:35:48</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>2018.8.24 晴</p>
+</blockquote>
+<p>在公司用到的VSC是SVN,并且用到的也只是简单的几个命令，昨天我学习了一下Github的一些操作，  觉得很有必要学习一个git了，这对我理解Github的用法也很有帮助，也对我以后有好处。于是我今天从Coursera上注册了一个课程，准备跟随他学习一下Git，笔记将记录在这里.</p>
+<h2>常用命令</h2>
+<p>git rest --hard 是清除工作区和暂存区里面的代码，也就是清除当前未 add，和已经 add 但是没有 commit 的代码
+git mv readme readme.md git 重命名的简便方式
+git log -n4 --oneline 最近的 4 次
+git log --master --graph 图例化
+git help --web log
+git config --local user.name 'wenzhe'
+gitk -all 图形界面
+git checkout -b newBranch 创建新分支并切换到
+git diff 比较两个commit 版本
+git diff HEAD HEAD^
+git branch -d branch 删除分支，如果没有合并 git 会提示，此时再 -D 删除最保险
+git commit --amend
+git rebase -i 父亲的commitid，来修改一个commit 或者多个
+上面那个命令修改多个的时候可能不能直接行，那就 git rebase --continue
+git diff --cached 暂存区和 head 指向的 commit 之间的差别
+git diff 工作区和暂存区的差别，后面可以加文件名详细的比较文件</p>
+<p>git reset HEAD 暂存区的都不要了，还原回工作区
+变化工作区用 checkout 变暂存区用reset
+git checkout -- index.html 把工作区的文件改为和暂存区一样的</p>
+<h2>宏观的理解Git</h2>
+<ul>
+<li>continuous improvement by commits</li>
+<li>simultaneous(同时) stability and development by branches</li>
+<li>improved quality by pull requests</li>
+<li>git都是以git开头，然后后面接空格</li>
+<li><img src="https://i.loli.net/2018/08/24/5b7f664156b51.png" alt="屏幕快照 2018-08-24 上午9.58.01.png"></li>
+</ul>
+<h2>一些不知道但是有用的命令</h2>
+<ul>
+<li>git --version 查看版本</li>
+<li>git help init 查看所有的帮助</li>
+<li>git config --global user.name</li>
+<li>git log --oneline -number 输出log只一行 number为指定数量</li>
+</ul>
+<h2>概念</h2>
+<ul>
+<li>working tree包含了项目的一次commit的文件、目录</li>
+<li>staging area 通过add添加到里面</li>
+<li>local resposition包含了本地的多次commit</li>
+<li>staging area local在.git这个文件夹里</li>
+<li>remote repository在远程</li>
+<li>git status是查看的work tree 和staging area之间状态</li>
+<li>git add add untracked and modify to staging area</li>
+<li>git commit create snapshot of current project</li>
+<li>git clone 得到local repository，可以指定名字在第二个参数</li>
+<li>git remove -v</li>
+<li>git push [-u] [rep] [branch]</li>
+<li>git push -u origin master 如果当前分支与多个主机存在追踪关系，则可以使用 -u 参数指定一个默认主机，这样后面就可以不加任何参数使用git push</li>
+</ul>
+<h2>git 的 DAG 模型</h2>
+<ul>
+<li>commit object - a small text file</li>
+<li>Annotaed tag - 特定 commit 的索引</li>
+<li><code>git log --oneline --graph</code> 很好用</li>
+<li>Git IDs 是一个 40 位的 16 进制数，也是 git Object 的名字，Git IDs 通常是四个字母的缩写或者更多的缩写</li>
+<li>git show to show all ids</li>
+<li>git hash-object get file's hash id</li>
+<li>acyclic means no cyclesj</li>
+</ul>
+<h2>git branches</h2>
+<p>master 指向该分支最近的一次提交，head 指向 master
+head 指向当前的分支
+~ 指向上一次提交
+~~ 上一次的上一次
+^1 first parent of the commit
+^2 second parent of merge commit (比如在 a 节点分出 b 和 c， b&amp;c -&gt; d 在d 运行 ^2 就是c)
+^^ first parent's first parent</p>
+<p>每个 branch 构成了一个项目，commit 属于一个 branch
+git branch 列出所有项目
+git branch freatureX create branch
+git checkout freatureX -&gt; change branch
+git branch -b newBranch create and change to newBranch
+git 如果指向某个 commit，并想回到它工作，那就要创建一个新的分支继续
+git branch -d featureX delete branch</p>
+<p>merge:</p>
+<ul>
+<li>git checkout master git merge featureX git branch -d featureX</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Wang Wenzhe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://writerwz.wang/passages/你应该懂得git知识点/">http://writerwz.wang/passages/你应该懂得git知识点/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/git/"># git</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/passages/css笔记之icon/">页面引入图片的几种方式</a>
+            
+            
+            <a class="next" rel="next" href="/passages/如何写一个脚本/">如何写一个脚本</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Wang Wenzhe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

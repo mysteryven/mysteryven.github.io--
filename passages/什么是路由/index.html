@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="chinese">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Wang Wenzhe">
+
+
+    <meta name="subtitle" content="none">
+
+
+
+    <meta name="keywords" content="front-end js">
+
+
+<title>什么是路由 | MysteryZZZ&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Mysteryzzz&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/读书">生活</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Mysteryzzz&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">技术</a>
+                
+                    <a class="menu-item" href="/读书">生活</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">什么是路由</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Wang Wenzhe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">September 24, 2018&nbsp;&nbsp;21:40:23</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2>什么是路由</h2>
+<p>根据路径展示给用户不同的页面就是路由，表现在后端方面的话，就是比如我们请求<code>www.mysteryven.com/page1</code>， 后端返回给我们<code>page1</code>所对应的页面，当我们请求<code>www.mysteryven.com/page2</code>，后端返回给我们<code>page2</code>对应的页面，在前端方面展示的话，可能就类似于切换tab的形式。通过用户的操作来展示给用户不同的『界面』,更通俗的讲，就是我们根据用户的点击来切换UI！我也没就这么简单。</p>
+<h2>路由的作用</h2>
+<p>通过对路由的巧妙使用，我们能实现无刷新『切换页面』，非常方便我们构建单页面应用！好吧，其实是假的切换页面，另外呢还有一个功能，就是可以保存页面当前的状态然后分享出去，对方打开依然还保持着页面的状态。</p>
+<h2>原理</h2>
+<p>我们先来模拟一下<code>vue-router</code>的原理。</p>
+<p>代码请看下面链接</p>
+<p>--&gt; <a href="https://mysterywz.xyz/Assignments/jquery-router/" target="_blank" rel="noopener">link</a></p>
+<p>这里说明一下，这样的展示效果是没有实现刷新依然保存的那种效果，因为那个需要后端的配合，如果想和后端配合，也很简单，只需要在请求这几个路径时，让后端返回给你相同的页面就行了，具体页面的展示逻辑，需要我们前端来做。</p>
+<p>比如说我们可以写Node.js的一小段路由的代码：</p>
+<p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (path === <span class="string">'/'</span> || <span class="string">'/tab1'</span> || <span class="string">'tab1'</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> string = fs.readFileSync(./index.html)  </span><br><span class="line">    response.statusCode = <span class="number">200</span> </span><br><span class="line">    response.setHeader(<span class="string">'Content-Type'</span>, <span class="string">'text/html; charset=utf-8'</span>)</span><br><span class="line">    response.write(string)</span><br><span class="line">    response.end()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果只由前端来实现路由的效果的话，我们可以使用锚点的方法来代替。代码请点击下方链接</p>
+<p>--&gt; <a href="https://mysterywz.xyz/Assignments/anchor-router/" target="_blank" rel="noopener">link</a></p>
+<p>这个我认为也是vue的原理，我故意的把锚点的链接都弄的和vue的一致。</p>
+<hr>
+<p>今天有点晚了，明天我看了<code>vue-router</code>再来写后半部分</p>
+<p>现在已经是第二天了，我今天去看牙医，回来弹了一个小时琴就快11点了，现在来写这篇博客。</p>
+<p>我发现用了vue之后上面的问题直接解决了，还要什么后端配合嘛？并且超级简单的代码，原来这就是传说中的单页面应用，以前我觉得神乎其神，现在就是也就这样嘛。
+我的vue版本代码也做完了，但是基本是copy的官方版本，毕竟是个简单的demo嘛，下一步把vue在看一遍，接着写完那个vue的第一个毕设。</p>
+<p>--&gt;<a href="https://mysterywz.xyz/Assignments/vue-router/" target="_blank" rel="noopener">link</a></p>
+<p>(完)</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Wang Wenzhe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://writerwz.wang/passages/什么是路由/">http://writerwz.wang/passages/什么是路由/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/js/"># js</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/passages/人工智能未必可怕/">人工智能未必可怕</a>
+            
+            
+            <a class="next" rel="next" href="/passages/how-to-understand-eventhub/">解释EventHub机制</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Wang Wenzhe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
