@@ -5,21 +5,45 @@
   <subtitle>none</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://writerwz.wang/"/>
-  <updated>2019-10-31T05:41:17.398Z</updated>
-  <id>http://writerwz.wang/</id>
+  <link href="http://mysterywz.xyz/"/>
+  <updated>2019-11-05T02:29:17.017Z</updated>
+  <id>http://mysterywz.xyz/</id>
   
   <author>
-    <name>Wang Wenzhe</name>
+    <name>wz</name>
     
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>generator 模拟 async/await 语法</title>
+    <link href="http://mysterywz.xyz/passages/generator-mock-async/"/>
+    <id>http://mysterywz.xyz/passages/generator-mock-async/</id>
+    <published>2019-11-05T02:07:36.000Z</published>
+    <updated>2019-11-05T02:29:17.017Z</updated>
+    
+    <content type="html"><![CDATA[<p>首先我们有一个 ajax 请求：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">doTask</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span>=&gt;</span> &#123;</span><br><span class="line">      resolve(<span class="string">'hello world'</span>);</span><br><span class="line">    &#125;, <span class="number">1000</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p><p>如果用 <code>async/await</code> 来写，可以很方便的写成下面这样：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">init</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> res = <span class="keyword">await</span> doTask();</span><br><span class="line">  <span class="built_in">console</span>.log(res) <span class="comment">// hello world</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p><p>我们怎么使用迭代器的语法写出来呢？</p><p>接下来我们需要一个 runner 函数来运行它，这是最主要的：</p><p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">runner</span>(<span class="params">genFn</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> itr = genFn();</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">run</span>(<span class="params">arg</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> res = itr.next(arg);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (result.done) &#123;</span><br><span class="line">      <span class="keyword">return</span> result.value</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">Promise</span>.resolve.(result.value).then(run);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> run();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">init</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> res = <span class="keyword">yield</span> doTask();</span><br><span class="line">  <span class="built_in">console</span>.log(res)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">runner(init); <span class="comment">// hello world</span></span><br></pre></td></tr></table></figure></p><p>我之前一直不理解为什么 <code>const res = yield doTask()</code> 为什么能拿到返回值，后来才注意到放到 <code>itr.next</code> 的参数。yield 的返回值就是前一步的 next 括号里面的值。</p><p><a href="https://hackernoon.com/async-await-generators-promises-51f1a6ceede2" target="_blank" rel="noopener">原文</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;首先我们有一个 ajax 请求：
+&lt;figure class=&quot;highlight js&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/spa
+      
+    
+    </summary>
+    
+    
+      <category term="js" scheme="http://mysterywz.xyz/tags/js/"/>
+    
+  </entry>
+  
+  <entry>
     <title>简谈web性能优化</title>
-    <link href="http://writerwz.wang/passages/%E7%AE%80%E8%B0%88web%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"/>
-    <id>http://writerwz.wang/passages/简谈web性能优化/</id>
+    <link href="http://mysterywz.xyz/passages/%E7%AE%80%E8%B0%88web%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"/>
+    <id>http://mysterywz.xyz/passages/简谈web性能优化/</id>
     <published>2019-03-18T13:01:55.000Z</published>
     <updated>2019-10-31T05:41:17.398Z</updated>
     
@@ -41,8 +65,8 @@
   
   <entry>
     <title>继承的两种写法</title>
-    <link href="http://writerwz.wang/passages/js%E7%BB%A7%E6%89%BF%E7%9A%84%E5%86%99%E6%B3%95/"/>
-    <id>http://writerwz.wang/passages/js继承的写法/</id>
+    <link href="http://mysterywz.xyz/passages/js%E7%BB%A7%E6%89%BF%E7%9A%84%E5%86%99%E6%B3%95/"/>
+    <id>http://mysterywz.xyz/passages/js继承的写法/</id>
     <published>2019-03-18T12:39:16.000Z</published>
     <updated>2019-10-31T05:41:17.369Z</updated>
     
@@ -60,14 +84,14 @@
     </summary>
     
     
-      <category term="js" scheme="http://writerwz.wang/tags/js/"/>
+      <category term="js" scheme="http://mysterywz.xyz/tags/js/"/>
     
   </entry>
   
   <entry>
     <title>手写bind</title>
-    <link href="http://writerwz.wang/passages/%E6%89%8B%E5%86%99bind/"/>
-    <id>http://writerwz.wang/passages/手写bind/</id>
+    <link href="http://mysterywz.xyz/passages/%E6%89%8B%E5%86%99bind/"/>
+    <id>http://mysterywz.xyz/passages/手写bind/</id>
     <published>2019-03-06T01:42:15.000Z</published>
     <updated>2019-10-31T05:41:17.395Z</updated>
     
@@ -85,14 +109,14 @@
     </summary>
     
     
-      <category term="js" scheme="http://writerwz.wang/tags/js/"/>
+      <category term="js" scheme="http://mysterywz.xyz/tags/js/"/>
     
   </entry>
   
   <entry>
     <title>js里面new到底有什么用？</title>
-    <link href="http://writerwz.wang/passages/js%E9%87%8C%E9%9D%A2new%E5%88%B0%E5%BA%95%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8%EF%BC%9F/"/>
-    <id>http://writerwz.wang/passages/js里面new到底有什么用？/</id>
+    <link href="http://mysterywz.xyz/passages/js%E9%87%8C%E9%9D%A2new%E5%88%B0%E5%BA%95%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8%EF%BC%9F/"/>
+    <id>http://mysterywz.xyz/passages/js里面new到底有什么用？/</id>
     <published>2019-03-01T07:34:41.000Z</published>
     <updated>2019-10-31T05:41:17.371Z</updated>
     
@@ -110,14 +134,14 @@
     </summary>
     
     
-      <category term="js" scheme="http://writerwz.wang/tags/js/"/>
+      <category term="js" scheme="http://mysterywz.xyz/tags/js/"/>
     
   </entry>
   
   <entry>
     <title>单元测试的必要性</title>
-    <link href="http://writerwz.wang/passages/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7/"/>
-    <id>http://writerwz.wang/passages/单元测试的必要性/</id>
+    <link href="http://mysterywz.xyz/passages/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7/"/>
+    <id>http://mysterywz.xyz/passages/单元测试的必要性/</id>
     <published>2019-02-16T11:06:41.000Z</published>
     <updated>2019-10-31T05:41:17.383Z</updated>
     
@@ -137,8 +161,8 @@
   
   <entry>
     <title>自建一个文件上传的小demo（前后台）</title>
-    <link href="http://writerwz.wang/passages/%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%BE%E7%89%87%E4%B8%8A%E4%BC%A0%E5%8A%9F%E8%83%BD%EF%BC%88%E5%89%8D%E5%90%8E%E5%8F%B0%EF%BC%89/"/>
-    <id>http://writerwz.wang/passages/实现一个简单的图片上传功能（前后台）/</id>
+    <link href="http://mysterywz.xyz/passages/%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%9B%BE%E7%89%87%E4%B8%8A%E4%BC%A0%E5%8A%9F%E8%83%BD%EF%BC%88%E5%89%8D%E5%90%8E%E5%8F%B0%EF%BC%89/"/>
+    <id>http://mysterywz.xyz/passages/实现一个简单的图片上传功能（前后台）/</id>
     <published>2019-02-10T13:35:56.000Z</published>
     <updated>2019-10-31T05:41:17.388Z</updated>
     
@@ -157,14 +181,14 @@
     </summary>
     
     
-      <category term="js" scheme="http://writerwz.wang/tags/js/"/>
+      <category term="js" scheme="http://mysterywz.xyz/tags/js/"/>
     
   </entry>
   
   <entry>
     <title>小程序的几个坑</title>
-    <link href="http://writerwz.wang/passages/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%87%A0%E4%B8%AA%E5%9D%91/"/>
-    <id>http://writerwz.wang/passages/小程序的几个坑/</id>
+    <link href="http://mysterywz.xyz/passages/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%87%A0%E4%B8%AA%E5%9D%91/"/>
+    <id>http://mysterywz.xyz/passages/小程序的几个坑/</id>
     <published>2019-01-30T15:13:05.000Z</published>
     <updated>2019-10-31T05:41:17.392Z</updated>
     
@@ -190,8 +214,8 @@
   
   <entry>
     <title>轮播组件和vue结合的一次bug</title>
-    <link href="http://writerwz.wang/passages/%20vue%E7%9A%84mounted%E5%BC%95%E5%8F%91%E7%9A%84bug/"/>
-    <id>http://writerwz.wang/passages/ vue的mounted引发的bug/</id>
+    <link href="http://mysterywz.xyz/passages/%20vue%E7%9A%84mounted%E5%BC%95%E5%8F%91%E7%9A%84bug/"/>
+    <id>http://mysterywz.xyz/passages/ vue的mounted引发的bug/</id>
     <published>2018-12-06T11:55:09.000Z</published>
     <updated>2019-10-31T05:41:17.351Z</updated>
     
@@ -208,14 +232,14 @@
     </summary>
     
     
-      <category term="vue" scheme="http://writerwz.wang/tags/vue/"/>
+      <category term="vue" scheme="http://mysterywz.xyz/tags/vue/"/>
     
   </entry>
   
   <entry>
     <title>表单美化小技巧</title>
-    <link href="http://writerwz.wang/passages/css%E7%AC%94%E8%AE%B0%E4%B9%8B%E8%A1%A8%E5%8D%95%E7%BE%8E%E5%8C%96%E6%8A%80%E5%B7%A7/"/>
-    <id>http://writerwz.wang/passages/css笔记之表单美化技巧/</id>
+    <link href="http://mysterywz.xyz/passages/css%E7%AC%94%E8%AE%B0%E4%B9%8B%E8%A1%A8%E5%8D%95%E7%BE%8E%E5%8C%96%E6%8A%80%E5%B7%A7/"/>
+    <id>http://mysterywz.xyz/passages/css笔记之表单美化技巧/</id>
     <published>2018-12-02T00:50:43.000Z</published>
     <updated>2019-10-31T05:41:17.363Z</updated>
     
@@ -232,14 +256,14 @@
     </summary>
     
     
-      <category term="css" scheme="http://writerwz.wang/tags/css/"/>
+      <category term="css" scheme="http://mysterywz.xyz/tags/css/"/>
     
   </entry>
   
   <entry>
     <title>BFC的作用</title>
-    <link href="http://writerwz.wang/passages/css%E7%AC%94%E8%AE%B0%E4%B9%8BBFC/"/>
-    <id>http://writerwz.wang/passages/css笔记之BFC/</id>
+    <link href="http://mysterywz.xyz/passages/css%E7%AC%94%E8%AE%B0%E4%B9%8BBFC/"/>
+    <id>http://mysterywz.xyz/passages/css笔记之BFC/</id>
     <published>2018-12-01T12:51:07.000Z</published>
     <updated>2019-10-31T05:41:17.358Z</updated>
     
@@ -259,14 +283,14 @@ disp
     </summary>
     
     
-      <category term="css" scheme="http://writerwz.wang/tags/css/"/>
+      <category term="css" scheme="http://mysterywz.xyz/tags/css/"/>
     
   </entry>
   
   <entry>
     <title>移动端页面布局的几点注意事项</title>
-    <link href="http://writerwz.wang/passages/css%E7%AC%94%E8%AE%B0%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%AF%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80/"/>
-    <id>http://writerwz.wang/passages/css笔记之移动端页面布局/</id>
+    <link href="http://mysterywz.xyz/passages/css%E7%AC%94%E8%AE%B0%E4%B9%8B%E7%A7%BB%E5%8A%A8%E7%AB%AF%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80/"/>
+    <id>http://mysterywz.xyz/passages/css笔记之移动端页面布局/</id>
     <published>2018-12-01T11:04:15.000Z</published>
     <updated>2019-10-31T05:41:17.362Z</updated>
     
@@ -284,14 +308,14 @@ disp
     </summary>
     
     
-      <category term="css" scheme="http://writerwz.wang/tags/css/"/>
+      <category term="css" scheme="http://mysterywz.xyz/tags/css/"/>
     
   </entry>
   
   <entry>
     <title>页面引入图片的几种方式</title>
-    <link href="http://writerwz.wang/passages/css%E7%AC%94%E8%AE%B0%E4%B9%8Bicon/"/>
-    <id>http://writerwz.wang/passages/css笔记之icon/</id>
+    <link href="http://mysterywz.xyz/passages/css%E7%AC%94%E8%AE%B0%E4%B9%8Bicon/"/>
+    <id>http://mysterywz.xyz/passages/css笔记之icon/</id>
     <published>2018-12-01T08:00:56.000Z</published>
     <updated>2019-10-31T05:41:17.360Z</updated>
     
@@ -311,14 +335,14 @@ disp
     </summary>
     
     
-      <category term="css" scheme="http://writerwz.wang/tags/css/"/>
+      <category term="css" scheme="http://mysterywz.xyz/tags/css/"/>
     
   </entry>
   
   <entry>
     <title>一些git知识点</title>
-    <link href="http://writerwz.wang/passages/%E4%BD%A0%E5%BA%94%E8%AF%A5%E6%87%82%E5%BE%97git%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
-    <id>http://writerwz.wang/passages/你应该懂得git知识点/</id>
+    <link href="http://mysterywz.xyz/passages/%E4%BD%A0%E5%BA%94%E8%AF%A5%E6%87%82%E5%BE%97git%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    <id>http://mysterywz.xyz/passages/你应该懂得git知识点/</id>
     <published>2018-11-25T10:35:48.000Z</published>
     <updated>2019-10-31T05:41:17.377Z</updated>
     
@@ -337,14 +361,14 @@ disp
     </summary>
     
     
-      <category term="git" scheme="http://writerwz.wang/tags/git/"/>
+      <category term="git" scheme="http://mysterywz.xyz/tags/git/"/>
     
   </entry>
   
   <entry>
     <title>如何写一个脚本</title>
-    <link href="http://writerwz.wang/passages/%E5%A6%82%E4%BD%95%E5%86%99%E4%B8%80%E4%B8%AA%E8%84%9A%E6%9C%AC/"/>
-    <id>http://writerwz.wang/passages/如何写一个脚本/</id>
+    <link href="http://mysterywz.xyz/passages/%E5%A6%82%E4%BD%95%E5%86%99%E4%B8%80%E4%B8%AA%E8%84%9A%E6%9C%AC/"/>
+    <id>http://mysterywz.xyz/passages/如何写一个脚本/</id>
     <published>2018-11-20T14:26:42.000Z</published>
     <updated>2019-10-31T05:41:17.384Z</updated>
     
@@ -364,14 +388,14 @@ disp
     </summary>
     
     
-      <category term="技巧" scheme="http://writerwz.wang/tags/%E6%8A%80%E5%B7%A7/"/>
+      <category term="技巧" scheme="http://mysterywz.xyz/tags/%E6%8A%80%E5%B7%A7/"/>
     
   </entry>
   
   <entry>
     <title>你所不知道的计算机技巧</title>
-    <link href="http://writerwz.wang/passages/%E4%BD%A0%E6%89%80%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%8A%80%E5%B7%A7/"/>
-    <id>http://writerwz.wang/passages/你所不知道的计算机技巧/</id>
+    <link href="http://mysterywz.xyz/passages/%E4%BD%A0%E6%89%80%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%8A%80%E5%B7%A7/"/>
+    <id>http://mysterywz.xyz/passages/你所不知道的计算机技巧/</id>
     <published>2018-11-15T14:15:40.000Z</published>
     <updated>2019-10-31T05:41:17.378Z</updated>
     
@@ -392,14 +416,14 @@ disp
     </summary>
     
     
-      <category term="技巧" scheme="http://writerwz.wang/tags/%E6%8A%80%E5%B7%A7/"/>
+      <category term="技巧" scheme="http://mysterywz.xyz/tags/%E6%8A%80%E5%B7%A7/"/>
     
   </entry>
   
   <entry>
     <title>使用vue-cli来构建单页面应用或多页面应用</title>
-    <link href="http://writerwz.wang/passages/%E4%BD%BF%E7%94%A8vue-cli%E6%9D%A5%E6%9E%84%E5%BB%BA%E5%8D%95%E9%A1%B5%E9%9D%A2%E5%BA%94%E7%94%A8%E6%88%96%E5%A4%9A%E9%A1%B5%E9%9D%A2%E5%BA%94%E7%94%A8/"/>
-    <id>http://writerwz.wang/passages/使用vue-cli来构建单页面应用或多页面应用/</id>
+    <link href="http://mysterywz.xyz/passages/%E4%BD%BF%E7%94%A8vue-cli%E6%9D%A5%E6%9E%84%E5%BB%BA%E5%8D%95%E9%A1%B5%E9%9D%A2%E5%BA%94%E7%94%A8%E6%88%96%E5%A4%9A%E9%A1%B5%E9%9D%A2%E5%BA%94%E7%94%A8/"/>
+    <id>http://mysterywz.xyz/passages/使用vue-cli来构建单页面应用或多页面应用/</id>
     <published>2018-11-14T13:36:17.000Z</published>
     <updated>2019-10-31T05:41:17.380Z</updated>
     
@@ -417,14 +441,14 @@ disp
     </summary>
     
     
-      <category term="vue" scheme="http://writerwz.wang/tags/vue/"/>
+      <category term="vue" scheme="http://mysterywz.xyz/tags/vue/"/>
     
   </entry>
   
   <entry>
     <title>css笔记之宽度与高度</title>
-    <link href="http://writerwz.wang/passages/%E5%AE%BD%E5%BA%A6%E5%92%8C%E9%AB%98%E5%BA%A6/"/>
-    <id>http://writerwz.wang/passages/宽度和高度/</id>
+    <link href="http://mysterywz.xyz/passages/%E5%AE%BD%E5%BA%A6%E5%92%8C%E9%AB%98%E5%BA%A6/"/>
+    <id>http://mysterywz.xyz/passages/宽度和高度/</id>
     <published>2018-11-10T08:37:58.000Z</published>
     <updated>2019-10-31T05:41:17.391Z</updated>
     
@@ -443,14 +467,14 @@ disp
     </summary>
     
     
-      <category term="css" scheme="http://writerwz.wang/tags/css/"/>
+      <category term="css" scheme="http://mysterywz.xyz/tags/css/"/>
     
   </entry>
   
   <entry>
     <title>人工智能未必可怕</title>
-    <link href="http://writerwz.wang/passages/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%9C%AA%E5%BF%85%E5%8F%AF%E6%80%95/"/>
-    <id>http://writerwz.wang/passages/人工智能未必可怕/</id>
+    <link href="http://mysterywz.xyz/passages/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%9C%AA%E5%BF%85%E5%8F%AF%E6%80%95/"/>
+    <id>http://mysterywz.xyz/passages/人工智能未必可怕/</id>
     <published>2018-09-26T13:40:23.000Z</published>
     <updated>2019-10-31T05:41:17.374Z</updated>
     
@@ -471,8 +495,8 @@ disp
   
   <entry>
     <title>什么是路由</title>
-    <link href="http://writerwz.wang/passages/%E4%BB%80%E4%B9%88%E6%98%AF%E8%B7%AF%E7%94%B1/"/>
-    <id>http://writerwz.wang/passages/什么是路由/</id>
+    <link href="http://mysterywz.xyz/passages/%E4%BB%80%E4%B9%88%E6%98%AF%E8%B7%AF%E7%94%B1/"/>
+    <id>http://mysterywz.xyz/passages/什么是路由/</id>
     <published>2018-09-24T13:40:23.000Z</published>
     <updated>2019-10-31T05:41:17.375Z</updated>
     
@@ -489,32 +513,7 @@ disp
     </summary>
     
     
-      <category term="js" scheme="http://writerwz.wang/tags/js/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>解释EventHub机制</title>
-    <link href="http://writerwz.wang/passages/how-to-understand-eventhub/"/>
-    <id>http://writerwz.wang/passages/how-to-understand-eventhub/</id>
-    <published>2018-09-14T13:40:23.000Z</published>
-    <updated>2019-10-31T05:41:17.366Z</updated>
-    
-    <content type="html"><![CDATA[<h2>前言</h2><p>在项目中，我们可能会需要两个模块间相互通讯，这时候就需要用到EventHub来处理这个问题.举个例子来说，我们页面的头和内容分别是用两个js文件来写的，这时候如果你想通过点击内容来触发头文件的事件，此时就需要用到eventHub机制。</p><h2>代码实现</h2><p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// eventHub.js</span><br><span class="line">window.eventHub = &#123;</span><br><span class="line">  fnList: [],</span><br><span class="line">  on(name, callback) &#123;</span><br><span class="line">    if (!this.fnList[name]) &#123;</span><br><span class="line">      this.fnList[name] = []</span><br><span class="line">    &#125;</span><br><span class="line">    this.fnList[name].push(callback)</span><br><span class="line">  &#125;,</span><br><span class="line">  emit(name, data) &#123;</span><br><span class="line">    this.fnList[name].map((fn)=&gt;&#123;</span><br><span class="line">      fn.call(undefined, data)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p><h2>举例子来说明</h2><blockquote><p>我们想实现的功能是这样的: 在点击按钮来让header的数字加1</p></blockquote><p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">// index.html</span><br><span class="line"> &lt;header&gt;</span><br><span class="line">    数字:&lt;span id=&apos;number&apos;&gt;1&lt;/span&gt;</span><br><span class="line">  &lt;/header&gt;</span><br><span class="line">  &lt;main&gt;</span><br><span class="line">    &lt;button onclick=&apos;mainJs.addOne()&apos;&gt;加1&lt;/button&gt;</span><br><span class="line">  &lt;/main&gt;  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/* js 部分 */</span><br><span class="line">// 我们就这样来假装两个文件了 </span><br><span class="line">var headerJs = &#123;</span><br><span class="line">  run() &#123;</span><br><span class="line">    window.eventHub.on(&apos;addOne&apos;, (number)=&gt;&#123;</span><br><span class="line">      document.getElementById(&apos;number&apos;).innerHTML = number</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">headerJs.run()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var mainJs = &#123;</span><br><span class="line">  num: 1,</span><br><span class="line">  addOne() &#123;</span><br><span class="line">    window.eventHub.emit(&apos;addOne&apos;, this.num++)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p><p>&lt;img src='https://i.loli.net/2018/08/17/5b7624f902c78.png'&gt;</p><p>我疯狂加了15次 结果就如上图所示。</p><h2>在vue中的应用</h2><blockquote><p>vue中直接替我们写好了on和emit函数，使用方法是类似的，同样的我们在例子中来理解这个过程。</p></blockquote><p>首先，我们知道组件内部的input的值单单使用v-model的双向绑定无法直接传到外部，此时我们就需要一些tricks。即用eventhub和监听组件内部的input输入事件来解决，具体如下。</p><p>&lt;script async src=&quot;//jsfiddle.net/0z8gnpv1/17/embed/&quot;&gt;&lt;/script&gt;</p><p>我试用了一下jsfiddle的分享功能，但是浏览的时候由于网速的关系吧，可能不是很理想，所以再paste源码到这</p><p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=&apos;app&apos;&gt;</span><br><span class="line">   内部:&lt;editable-span v-on:updata=&apos;updataName&apos; v-bind:name=&apos;name&apos;&gt;&lt;/editable-span&gt; </span><br><span class="line">   &lt;hr&gt;</span><br><span class="line">  外部:&#123;&#123;name&#125;&#125;</span><br><span class="line"> &lt;/div&gt;</span><br><span class="line">  &lt;script src=&quot;https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p><p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Vue.component(&apos;editable-span&apos;, &#123;</span><br><span class="line">props: [&apos;name&apos;],</span><br><span class="line">template: `</span><br><span class="line">  &lt;input :value=&quot;name&quot; @input=&quot;updataName&quot;&gt;`,</span><br><span class="line">  methods: &#123;</span><br><span class="line">  updataName(e)&#123;</span><br><span class="line">    this.$emit(&apos;updata&apos;, e.currentTarget.value)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">new Vue(&#123;</span><br><span class="line">el: &apos;#app&apos;,</span><br><span class="line">  data: &#123;</span><br><span class="line">  name: &apos;&apos;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">  updataName(e) &#123;</span><br><span class="line">    this.name = e</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p><p>效果&lt;img src='https://i.loli.net/2018/08/17/5b763aef6f9b8.png'&gt;</p><p>(完)</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2&gt;前言&lt;/h2&gt;
-&lt;p&gt;在项目中，我们可能会需要两个模块间相互通讯，这时候就需要用到EventHub来处理这个问题.举个例子来说，我们页面的头和内容分别是用两个js文件来写的，这时候如果你想通过点击内容来触发头文件的事件，此时就需要用到eventHub机制。&lt;/p&gt;
-&lt;h2
-      
-    
-    </summary>
-    
-    
-      <category term="js" scheme="http://writerwz.wang/tags/js/"/>
+      <category term="js" scheme="http://mysterywz.xyz/tags/js/"/>
     
   </entry>
   
